@@ -71,12 +71,12 @@ class Running(Training):
         """Получить количество затраченных калорий."""
         duration_m = self.duration * self.M_IN_H
         return (
-            (self.COEFF_CALORIE_1
-            * self.get_mean_speed()
-            - self.COEFF_CALORIE_2)
-            * self.weight
-            / self.M_IN_KM
-            * duration_m
+                (self.COEFF_CALORIE_1
+                * self.get_mean_speed()
+                - self.COEFF_CALORIE_2)
+                * self.weight
+                / self.M_IN_KM
+                * duration_m
         )
 
 
@@ -99,12 +99,12 @@ class SportsWalking(Training):
         """Получить количество затраченных калорий."""
         duration_m = self.duration * self.M_IN_H
         return (
-            (self.COEFF_CALORIE_1
-            * self.weight
-            + (self.get_mean_speed() ** 2 // self.height)
-            * self.COEFF_CALORIE_2
-            * self.weight)
-            * duration_m
+                (self.COEFF_CALORIE_1
+                * self.weight
+                + (self.get_mean_speed() ** 2 // self.height)
+                * self.COEFF_CALORIE_2
+                * self.weight)
+                * duration_m
         )
 
 
