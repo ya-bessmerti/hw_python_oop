@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import Callable, Dict
+from typing import Dict, Type
 
 
 @dataclass
@@ -10,7 +10,7 @@ class InfoMessage:
     distance: float
     speed: float
     calories: float
-    message = (
+    MESSAGE = (
         'Тип тренировки: {}; '
         'Длительность: {:.3f} ч.; '
         'Дистанция: {:.3f} км; '
@@ -20,14 +20,14 @@ class InfoMessage:
 
     def get_message(self) -> str:
         """Возвращение строки сообщения."""
-        return self.message.format(*asdict(self).values())
+        return self.MESSAGE.format(*asdict(self).values())
 
 
 class Training:
     """Базовый класс тренировки."""
     LEN_STEP: float = 0.65
     M_IN_KM: int = 1000
-    M_IN_H: int = 60
+    MINUTES_PER_HOUR: int = 60
 
     def __init__(
         self,
@@ -69,7 +69,7 @@ class Running(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        duration_m = self.duration * self.M_IN_H
+        duration_m = self.duration * self.MINUTES_PER_HOUR
         return (
             (self.COEFF_CALORIE_1
              * self.get_mean_speed()
@@ -97,7 +97,7 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        duration_m = self.duration * self.M_IN_H
+        duration_m = self.duration * self.MINUTES_PER_HOUR
         return (
             (self.COEFF_CALORIE_1
              * self.weight
@@ -141,17 +141,19 @@ class Swimming(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return ((self.get_mean_speed() + self.COEFF_CALORIE_1)
-                * self.COEFF_CALORIE_2
-                * self.weight)
+        return (
+            (self.get_mean_speed() + self.COEFF_CALORIE_1)
+            * self.COEFF_CALORIE_2
+            * self.weight
+        )
 
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    training_parametrs: Dict[str, Callable] = {
+    training_parametrs: Dict[str, Type] = {
         'SWM': Swimming,
         'RUN': Running,
-        'WLK': SportsWalking
+        'WLK': SportsWalking,
     }
     if workout_type in training_parametrs:
         return training_parametrs[workout_type](*data)
