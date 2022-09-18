@@ -27,7 +27,7 @@ class Training:
     """Базовый класс тренировки."""
     LEN_STEP: float = 0.65
     M_IN_KM: int = 1000
-    MINUTES_PER_HOUR: int = 60
+    MINUTES_IN_HOURS: int = 60
 
     def __init__(
         self,
@@ -69,11 +69,13 @@ class Running(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        duration_m = self.duration * self.MINUTES_PER_HOUR
+        duration_m = self.duration * self.MINUTES_IN_HOURS
         return (
-            (self.COEFF_CALORIE_1
-             * self.get_mean_speed()
-             - self.COEFF_CALORIE_2)
+            (
+                self.COEFF_CALORIE_1
+                * self.get_mean_speed()
+                - self.COEFF_CALORIE_2
+            )
             * self.weight
             / self.M_IN_KM
             * duration_m
@@ -97,13 +99,15 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        duration_m = self.duration * self.MINUTES_PER_HOUR
+        duration_m = self.duration * self.MINUTES_IN_HOURS
         return (
-            (self.COEFF_CALORIE_1
-             * self.weight
-             + (self.get_mean_speed() ** 2 // self.height)
-             * self.COEFF_CALORIE_2
-             * self.weight)
+            (
+                self.COEFF_CALORIE_1
+                * self.weight
+                + (self.get_mean_speed() ** 2 // self.height)
+                * self.COEFF_CALORIE_2
+                * self.weight
+            )
             * duration_m
         )
 
@@ -142,7 +146,10 @@ class Swimming(Training):
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         return (
-            (self.get_mean_speed() + self.COEFF_CALORIE_1)
+            (
+                self.get_mean_speed()
+                + self.COEFF_CALORIE_1
+            )
             * self.COEFF_CALORIE_2
             * self.weight
         )
@@ -150,7 +157,7 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    training_parametrs: Dict[str, Type] = {
+    training_parametrs: Dict[str, Type[Training]] = {
         'SWM': Swimming,
         'RUN': Running,
         'WLK': SportsWalking,
